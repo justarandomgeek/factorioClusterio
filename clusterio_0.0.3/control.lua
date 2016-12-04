@@ -125,6 +125,10 @@ script.on_event(defines.events.on_tick, function(event)
 		ExportInputList()
 	elseif todo == 5 then
 		ExportOutputList()
+	elseif todo == 6 then
+		ExportItemFlows()
+  elseif todo == 7 then
+    ExportFluidFlows()
   end
 
   local rxstate = game.tick % CIRCUIT_UPDATE_RATE
@@ -310,6 +314,32 @@ function ExportOutputList()
 		--instead of doing it with the .. operator
 		game.write_file(ORDER_FILE, table.concat(exportStrings), true, global.write_file_player or 0)
 	end
+end
+
+function ExportItemFlows()
+	local flowreport = {type="item",flows={}}
+
+  for _,force in pairs(game.forces) do
+    flowreport.flows[force.name] = {
+      input_counts = force.item_production_statistics.input_counts,
+      output_counts = force.item_production_statistics.output_counts,
+    }
+  end
+
+  game.write_file(FLOWS_FILE, json:encode(flowreport).."\n", true, global.write_file_player or 0)
+end
+
+function ExportFluidFlows()
+	local flowreport = {type="fluid",flows={}}
+
+  for _,force in pairs(game.forces) do
+    flowreport.flows[force.name] = {
+      input_counts = force.fluid_production_statistics.input_counts,
+      output_counts = force.fluid_production_statistics.output_counts,
+    }
+  end
+
+  game.write_file(FLOWS_FILE, json:encode(flowreport).."\n", true, global.write_file_player or 0)
 end
 
 
