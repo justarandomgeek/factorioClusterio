@@ -444,9 +444,12 @@ function UpdateInvCombinators()
 
   local items = game.item_prototypes
   local fluids = game.fluid_prototypes
+  local virtuals = game.virtual_signal_prototypes
   if global.invdata then
     for name,count in pairs(global.invdata) do
-      if fluids[name] then
+      if virtuals[name] then
+        invframe[#invframe+1] = {count=count,index=#invframe+1,signal={name=name,type="virtual"}}
+      elseif fluids[name] then
         invframe[#invframe+1] = {count=count,index=#invframe+1,signal={name=name,type="fluid"}}
       elseif items[name] then
         invframe[#invframe+1] = {count=count,index=#invframe+1,signal={name=name,type="item"}}
